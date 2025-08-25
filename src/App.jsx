@@ -1,31 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-
-/**
- * Shivank — Interactive Portfolio
- * ------------------------------------------------------------
- * • Built as a single React component (default export) for quick drop-in.
- * • Styling with Tailwind CSS utility classes.
- * • Delightful micro‑interactions via Framer Motion.
- * • “Comet alternative”: draggable, bouncy Coding‑Pun Orbs.
- * • Projects visualized as a floating Repo Constellation pulling from GitHub.
- * • Responsive, a11y‑friendly, lightweight.
- *
- * To use:
- *  1) Ensure Tailwind & Framer Motion are available.
- *  2) Import and render <ShivankPortfolio /> in your app.
- *  3) Tailor the content blocks below if desired.
- */
-
-// ------------------------- Utils -------------------------
 const cx = (...classes) => classes.filter(Boolean).join(" ");
 
 const shimmer = {
   backgroundImage:
     "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.25) 50%, rgba(255,255,255,0) 100%)",
 };
-
-// Nice code‑puns for the movable orbs. Add/modify as you like.
 const CODING_PUNS = [
   "I like my code like my coffee: strong()",
   "throw new Error('Hire me!')",
@@ -39,43 +19,45 @@ const CODING_PUNS = [
   "sudo make awesome",
 ];
 
-// From https://iamshivank.netlify.app/ (Aug 24, 2025)
-// Name, headline, quick facts pulled and adapted.
 const PROFILE = {
   name: "Shivank",
   headline: "Software Developer · Support Engineer · AI/ML Enthusiast",
   about:
-    "B.Tech (SRM, Chennai) — Dedicated and forward‑thinking with a passion for data‑driven problem solving, ML, and building clean UIs. Comfortable across Python, Javascript, and frontend basics. Love collaborative environments and a good challenge.",
+    "I did my B.Tech from SRM, Chennai and I’m really into data-driven problem solving, ML, and designing clean, simple UIs. I’m comfortable working with Python, JavaScript, and the usual frontend stuff. I enjoy collaborating with people, learning along the way, and tackling challenging problems that push me to grow.",
   email: "officialshivaank001@gmail.com",
   location: "Bengaluru, India",
-  education: [
-    { title: "B.Tech — SRM Chennai", detail: "CGPA 8.69" },
-    { title: "12th Boards (CBSE)", detail: "72%" },
-    { title: "10th Boards (CBSE)", detail: "74%" },
+  experience: [
+    {
+      company: "Capillary Technologies",
+      location: "Bengaluru, Karnataka",
+      role: "Product Support Engineer",
+      duration: "June 2024 – August 2025",
+      bullets: [
+        "Resolved over 200 client-reported technical issues by analyzing application logs and debugging Java/Node.js code, reducing average ticket resolution time by 15%.",
+        "Engineered and deployed 50+ hotfixes for critical bugs in production environments, collaborating with a team of 10 developers to ensure 99.9% application uptime.",
+        "Documented technical specifications and troubleshooting guides for 7 core product modules, improving knowledge transfer efficiency for new team members by 25%.",
+      ],
+    },
   ],
   quick: [
-    // { k: "C/C++"},
     { k: "Python",v: "Intermediate" },
     { k: "Javascript", v: "Experienced" },
     { k: "React", v: "Intermediate" },
     { k: "Node.js", v: "Basic" },
     { k: "Machine Learning", v: "Intermediate" },
-    // { k: "Web Dev (FE)", v: "Basic" },
-    // { k: "Data Analysis", v: "Intermediate" },
-    // { k: "Excel + Photo/Video Editing", v: "Intermediate" },
   ],
   socials: [
     { label: "GitHub", href: "https://github.com/iamshivank" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/shivank-5374b21b7/" },
-    { label: "X", href: "https://twitter.com/iamshivaank" },
+    { label: "X", href: "https://twitter.com/theshivaank" },
   ],
   highlightProjects: [
     {
-      title: "Heart Disease Prediction (ML)",
+      title: "Pixie: A smart Jira assistant",
       summary:
         "Supervised learning pipeline for risk prediction; data cleaning, EDA, model training & evaluation.",
       link: "https://github.com/iamshivank",
-      tag: "ML",
+      tag: "AI/ML",
     },
     {
       title: "Weather App (Django)",
@@ -389,15 +371,20 @@ function Hero() {
 function Timeline() {
   return (
     <GlassCard>
-      <SectionTitle overline="Journey" title="Education" />
+      <SectionTitle overline="My Journey" title="Experience" />
       <div className="relative pl-6">
         <div className="absolute left-3 top-0 bottom-0 w-px bg-white/15" />
         <ul className="space-y-6">
-          {PROFILE.education.map((e, idx) => (
+          {PROFILE.experience.map((e, idx) => (
             <li key={idx} className="relative">
-              <span className="absolute -left-[9px] top-1.5 h-2.5 w-2.5 rounded-full bg-emerald-400" />
-              <div className="font-semibold">{e.title}</div>
-              <div className="text-sm text-white/70">{e.detail}</div>
+              <span className="absolute -left-[16px] top-1.5 h-2.5 w-2.5 rounded-full bg-emerald-400" />
+              <div className="font-semibold">{e.role} · {e.company}</div>
+              <div className="text-sm text-white/70">{e.location} · {e.duration}</div>
+              <ul className="mt-2 list-disc pl-5 text-sm text-white/80">
+                {e.bullets.map((b, i) => (
+                  <li key={i}>{b}</li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>
