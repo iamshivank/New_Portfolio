@@ -40,7 +40,7 @@ const PROFILE = {
     },
   ],
   quick: [
-    { k: "Python",v: "Intermediate" },
+    { k: "Python", v: "Intermediate" },
     { k: "Javascript", v: "Experienced" },
     { k: "React", v: "Intermediate" },
     { k: "Node.js", v: "Basic" },
@@ -185,6 +185,84 @@ function PunOrbs() {
   );
 }
 
+// Individual draggable repo node that handles both drag and click interactions
+function RepoNode({ repo, initialX, initialY, dragConstraints }) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragDistance, setDragDistance] = useState(0);
+
+  const handleDragStart = (event, info) => {
+    setIsDragging(true);
+    setDragDistance(0);
+  };
+
+  const handleDrag = (event, info) => {
+    // Calculate total drag distance
+    const distance = Math.sqrt(info.offset.x * info.offset.x + info.offset.y * info.offset.y);
+    setDragDistance(distance);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleClick = (e) => {
+    // Prevent navigation if user was dragging (more than 5px threshold)
+    if (dragDistance > 5) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    // Otherwise, allow normal link behavior
+  };
+
+  return (
+    <motion.a
+      href={repo.html_url}
+      target="_blank"
+      rel="noreferrer"
+      drag
+      dragConstraints={dragConstraints}
+      dragElastic={0.6}
+      dragMomentum={false}
+      onDragStart={handleDragStart}
+      onDrag={handleDrag}
+      onDragEnd={handleDragEnd}
+      onClick={handleClick}
+      className={cx(
+        "group absolute -translate-x-1/2 -translate-y-1/2 cursor-grab select-none",
+        "rounded-2xl border border-white/20 bg-white/5 px-3 py-2",
+        "hover:bg-white/10 hover:shadow-lg transition-all duration-200",
+        isDragging && "cursor-grabbing shadow-2xl z-10"
+      )}
+      style={{ left: initialX, top: initialY }}
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.98 }}
+      whileDrag={{
+        scale: 1.1,
+        rotate: 5,
+        boxShadow: "0 10px 30px -5px rgba(0,0,0,0.5)"
+      }}
+    >
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-semibold">{repo.name}</span>
+        <Dot />
+        <span className="text-[10px] text-white/60">★ {repo.stargazers_count}</span>
+      </div>
+      {repo.description && (
+        <div className="mt-1 max-w-[220px] text-[11px] text-white/70 line-clamp-2">
+          {repo.description}
+        </div>
+      )}
+
+      {/* Subtle drag indicator */}
+      <div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-60 transition-opacity">
+        <div className="w-2 h-2 rounded-full bg-white/40 animate-pulse" />
+      </div>
+    </motion.a>
+  );
+}
+
 // Fetch GitHub repos and lay them out in a gentle orbit/constellation
 function useGithubRepos(username, count = 9) {
   const [repos, setRepos] = useState([]);
@@ -224,6 +302,7 @@ function useGithubRepos(username, count = 9) {
 function RepoConstellation({ username = "iamshivank" }) {
   const { repos, loading, error } = useGithubRepos(username, 12);
   const radius = 180;
+  const containerRef = useRef(null);
 
   return (
     <GlassCard className="relative overflow-hidden">
@@ -232,7 +311,7 @@ function RepoConstellation({ username = "iamshivank" }) {
         A playful, non‑traditional layout. Repos orbit softly; drag to inspect. Click to open.
       </p>
 
-      <div className="relative mx-auto h-[420px] w-full max-w-3xl">
+      <div ref={containerRef} className="relative mx-auto h-[420px] w-full max-w-3xl">
         <div className="absolute inset-0">
           {/* Orbit rings */}
           <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
@@ -254,7 +333,7 @@ function RepoConstellation({ username = "iamshivank" }) {
         </AnimatePresence>
 
         {error && (
-          <div className="text-sm text-red-300">Couldn’t load GitHub repos: {error}</div>
+          <div className="text-sm text-red-300">Couldn't load GitHub repos: {error}</div>
         )}
 
         {/* Nodes */}
@@ -267,31 +346,13 @@ function RepoConstellation({ username = "iamshivank" }) {
             const y = Math.sin(angle) * dist;
 
             return (
-              <motion.a
+              <RepoNode
                 key={r.id}
-                href={r.html_url}
-                target="_blank"
-                rel="noreferrer"
-                className={cx(
-                  "group absolute -translate-x-1/2 -translate-y-1/2",
-                  "rounded-2xl border border-white/20 bg-white/5 px-3 py-2",
-                  "hover:bg-white/10 hover:shadow-lg"
-                )}
-                style={{ left: x, top: y }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold">{r.name}</span>
-                  <Dot />
-                  <span className="text-[10px] text-white/60">★ {r.stargazers_count}</span>
-                </div>
-                {r.description && (
-                  <div className="mt-1 max-w-[220px] text-[11px] text-white/70 line-clamp-2">
-                    {r.description}
-                  </div>
-                )}
-              </motion.a>
+                repo={r}
+                initialX={x}
+                initialY={y}
+                dragConstraints={containerRef}
+              />
             );
           })}
         </div>
