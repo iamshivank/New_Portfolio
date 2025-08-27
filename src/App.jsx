@@ -34,7 +34,9 @@ const PROFILE = {
       duration: "June 2024 – August 2025",
       bullets: [
         "Resolved over 200 client-reported technical issues by analyzing application logs and debugging Java/Node.js code, reducing average ticket resolution time by 15%.",
+
         "Engineered and deployed 50+ hotfixes for critical bugs in production environments, collaborating with a team of 10 developers to ensure 99.9% application uptime.",
+
         "Documented technical specifications and troubleshooting guides for 7 core product modules, improving knowledge transfer efficiency for new team members by 25%.",
       ],
     },
@@ -43,8 +45,9 @@ const PROFILE = {
     { k: "Python", v: "Intermediate" },
     { k: "Javascript", v: "Experienced" },
     { k: "React", v: "Intermediate" },
-    { k: "Node.js", v: "Basic" },
     { k: "Machine Learning", v: "Intermediate" },
+    { k: "Jira", v: "Experienced" },
+    { k: "Kafka", v: "Basic" },
   ],
   socials: [
     { label: "GitHub", href: "https://github.com/iamshivank" },
@@ -55,15 +58,15 @@ const PROFILE = {
     {
       title: "Pixie: A smart Jira assistant",
       summary:
-        "Supervised learning pipeline for risk prediction; data cleaning, EDA, model training & evaluation.",
-      link: "https://github.com/iamshivank",
+        "Developed a Python-based Slack bot integrated with Jira REST API to automate issue management and tracking directly from Slack.",
+      link: "https://github.com/iamshivank/Slack-Bot-for-Jira",
       tag: "AI/ML",
     },
     {
-      title: "Weather App (Django)",
-      summary: "City‑level weather lookup with clean UI & API integration.",
-      link: "https://github.com/iamshivank",
-      tag: "Web",
+      title: "E-commerce Store",
+      summary: "Developed a full-stack e-commerce dashboard with React, Tailwind, and REST API featuring reusable components.",
+      link: "https://github.com/iamshivank/comfy-store",
+      tag: "FSD",
     },
     {
       title: "Pneumonia Detection (CNN)",
@@ -443,7 +446,7 @@ function Timeline() {
               <div className="text-sm text-white/70">{e.location} · {e.duration}</div>
               <ul className="mt-2 list-disc pl-5 text-sm text-white/80">
                 {e.bullets.map((b, i) => (
-                  <li key={i}>{b}</li>
+                  <li key={i} className="mb-4">{b}</li>
                 ))}
               </ul>
             </li>
